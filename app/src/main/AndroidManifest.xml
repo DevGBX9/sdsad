@@ -18,6 +18,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- WakeLock & Battery for Persistent Background Service -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <!-- Boot Completed (optional auto-start) -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 

@@ -43,6 +43,7 @@ class OoreDoostService : Service() {
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var cycleJob: Job? = null
     private val trafficTracker = TrafficTracker()
+    private var wakeLock: android.os.PowerManager.WakeLock? = null
 
     companion object {
         const val ACTION_START_SMART = "com.ooredoost.START_SMART"
@@ -61,9 +62,41 @@ class OoreDoostService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Service created")
+        acquireWakeLock()
+    }
+
+    private fun acquireWakeLock() {
+        try {
+            if (wakeLock == null) {
+                val powerManager = getSystemService(android.content.Context.POWER_SERVICE) as android.os.PowerManager
+                wakeLock = powerManager.newWakeLock(
+                    android.os.PowerManager.PARTIAL_WAKE_LOCK,
+                    "OoreDoost::ServiceWakeLock"
+                ).apply {
+                    setReferenceCounted(false)
+                    acquire(24 * 60 * 60 * 1000L) // 24 hours max safety timeout
+                }
+                Log.d(TAG, "WakeLock acquired for background execution")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to acquire WakeLock", e)
+        }
+    }
+
+    private fun releaseWakeLock() {
+        try {
+            if (wakeLock?.isHeld == true) {
+                wakeLock?.release()
+                Log.d(TAG, "WakeLock released")
+            }
+            wakeLock = null
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to release WakeLock", e)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        acquireWakeLock()
         when (intent?.action) {
             ACTION_START_SMART -> {
                 startForeground(NOTIFICATION_ID, createNotification("جاري التحضير..."))
@@ -78,10 +111,20 @@ class OoreDoostService : Service() {
                 stopCycling()
             }
             else -> {
-                stopSelf()
+                // If service was restarted by the system while running
+                if (_serviceState.value.isRunning) {
+                    startForeground(NOTIFICATION_ID, createNotification("استئناف الخدمة..."))
+                    if (_serviceState.value.mode == CycleMode.SMART) {
+                        startSmartMode()
+                    } else {
+                        startManualMode(_serviceState.value.manualIntervalSeconds)
+                    }
+                } else {
+                    stopSelf()
+                }
             }
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
     // ═══════════════════════════════════════════
@@ -434,6 +477,7 @@ class OoreDoostService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         cycleJob?.cancel()
+        releaseWakeLock()
         // Ensure airplane mode is OFF
         if (AirplaneModeHelper.isAirplaneModeOn(this)) {
             AirplaneModeHelper.disableAirplaneMode(this)
