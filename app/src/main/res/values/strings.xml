@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OoreDoost</string>
+
+    <!-- Home Screen -->
+    <string name="smart_mode">Smart</string>
+    <string name="manual_mode">Manual</string>
+    <string name="smart_mode_desc">Fully automatic</string>
+    <string name="manual_mode_desc">Control interval</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="total">Total</string>
+    <string name="interval_seconds">%d seconds</string>
+    <string name="time_interval">Time Interval</string>
+
+    <!-- Status -->
+    <string name="status_idle">Idle</string>
+    <string name="status_activating">Activating airplane mode</string>
+    <string name="status_airplane_on">Airplane mode ON</string>
+    <string name="status_deactivating">Deactivating airplane mode</string>
+    <string name="status_reconnecting">Waiting for reconnection</string>
+    <string name="status_monitoring">Monitoring data flow</string>
+    <string name="status_data_flowing">Data flowing!</string>
+    <string name="status_data_stopped">Data stopped</string>
+    <string name="status_waiting">Waiting interval</string>
+    <string name="status_permission_error">Permission error</string>
+
+    <!-- Stats -->
+    <string name="statistics">Statistics</string>
+    <string name="total_data">Total Data</string>
+    <string name="cycles">Cycles</string>
+    <string name="bursts">Bursts</string>
+    <string name="sessions">Sessions</string>
+    <string name="session_history">Session History</string>
+    <string name="no_sessions">No sessions yet</string>
+    <string name="start_service_hint">Start the service from the home screen</string>
+    <string name="delete_all">Delete All</string>
+    <string name="delete_history">Delete History</string>
+    <string name="delete_confirm">Delete all previous sessions?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="timing_settings">Timing Settings</string>
+    <string name="airplane_duration">Airplane Mode Duration</string>
+    <string name="airplane_duration_desc">How long airplane mode stays on</string>
+    <string name="data_timeout">Data Timeout</string>
+    <string name="data_timeout_desc">Wait time before considering burst ended</string>
+    <string name="monitoring_settings">Monitoring Settings</string>
+    <string name="monitoring_sensitivity">Monitoring Sensitivity</string>
+    <string name="monitoring_sensitivity_desc">Data check interval in milliseconds</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="developer">Developer</string>
+    <string name="supported_network">Supported Network</string>
+    <string name="optimized_device">Optimized Device</string>
+
+    <!-- Setup -->
+    <string name="setup_title">Permission Setup</string>
+    <string name="setup_subtitle">One-time setup via computer</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="app_ready">App is ready to use</string>
+    <string name="continue_to_app">Continue to App</string>
+    <string name="check_permission">Check Permission</string>
+    <string name="permission_warning">ADB permission not granted - tap here to setup</string>
+
+    <!-- Notification -->
+    <string name="notification_preparing">Preparing…</string>
+    <string name="notification_stop">Stop</string>
+</resources>

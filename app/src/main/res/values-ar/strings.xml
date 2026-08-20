@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">أوريدوست</string>
+
+    <!-- Home Screen -->
+    <string name="smart_mode">ذكي</string>
+    <string name="manual_mode">يدوي</string>
+    <string name="smart_mode_desc">تلقائي بالكامل</string>
+    <string name="manual_mode_desc">تحكم بالفاصل الزمني</string>
+    <string name="start">تشغيل</string>
+    <string name="stop">إيقاف</string>
+    <string name="total">الإجمالي</string>
+    <string name="interval_seconds">%d ثانية</string>
+    <string name="time_interval">الفاصل الزمني</string>
+
+    <!-- Status -->
+    <string name="status_idle">متوقف</string>
+    <string name="status_activating">تفعيل وضع الطيران</string>
+    <string name="status_airplane_on">وضع الطيران مفعل</string>
+    <string name="status_deactivating">إلغاء وضع الطيران</string>
+    <string name="status_reconnecting">انتظار إعادة الاتصال</string>
+    <string name="status_monitoring">مراقبة تدفق البيانات</string>
+    <string name="status_data_flowing">بيانات متدفقة!</string>
+    <string name="status_data_stopped">توقف التدفق</string>
+    <string name="status_waiting">انتظار الفاصل الزمني</string>
+    <string name="status_permission_error">خطأ في الصلاحيات</string>
+
+    <!-- Stats -->
+    <string name="statistics">الإحصائيات</string>
+    <string name="total_data">إجمالي البيانات</string>
+    <string name="cycles">الدورات</string>
+    <string name="bursts">الدفعات</string>
+    <string name="sessions">الجلسات</string>
+    <string name="session_history">سجل الجلسات</string>
+    <string name="no_sessions">لا توجد جلسات بعد</string>
+    <string name="start_service_hint">ابدأ بتشغيل الخدمة من الشاشة الرئيسية</string>
+    <string name="delete_all">حذف الكل</string>
+    <string name="delete_history">حذف السجل</string>
+    <string name="delete_confirm">هل تريد حذف جميع الجلسات السابقة؟</string>
+    <string name="delete">حذف</string>
+    <string name="cancel">إلغاء</string>
+
+    <!-- Settings -->
+    <string name="settings">الإعدادات</string>
+    <string name="timing_settings">إعدادات التوقيت</string>
+    <string name="airplane_duration">مدة وضع الطيران</string>
+    <string name="airplane_duration_desc">كم يبقى وضع الطيران مفعلاً</string>
+    <string name="data_timeout">مهلة انتهاء البيانات</string>
+    <string name="data_timeout_desc">كم ينتظر قبل اعتبار الدفعة انتهت</string>
+    <string name="monitoring_settings">إعدادات المراقبة</string>
+    <string name="monitoring_sensitivity">دقة المراقبة</string>
+    <string name="monitoring_sensitivity_desc">كل كم ميلي ثانية يتم فحص البيانات</string>
+    <string name="about">حول التطبيق</string>
+    <string name="version">الإصدار</string>
+    <string name="developer">المطور</string>
+    <string name="supported_network">الشبكة المدعومة</string>
+    <string name="optimized_device">الجهاز المحسن</string>
+
+    <!-- Setup -->
+    <string name="setup_title">إعداد الصلاحيات</string>
+    <string name="setup_subtitle">خطوة واحدة فقط عبر الكمبيوتر (مرة واحدة)</string>
+    <string name="permission_granted">الصلاحية ممنوحة</string>
+    <string name="app_ready">التطبيق جاهز للاستخدام</string>
+    <string name="continue_to_app">متابعة إلى التطبيق</string>
+    <string name="check_permission">تحقق من الصلاحية</string>
+    <string name="permission_warning">⚠️ صلاحية ADB غير ممنوحة - اضغط هنا للإعداد</string>
+
+    <!-- Notification -->
+    <string name="notification_preparing">جاري التحضير…</string>
+    <string name="notification_stop">إيقاف</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ooredoo_red">#FFE4002B</color>
+    <color name="ooredoo_red_dark">#FFB80022</color>
+    <color name="dark_background">#FF0A0A14</color>
+    <color name="dark_surface">#FF12121F</color>
+    <color name="ic_launcher_background">#FFE4002B</color>
+</resources>
