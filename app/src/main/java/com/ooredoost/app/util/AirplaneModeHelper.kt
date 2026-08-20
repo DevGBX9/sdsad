@@ -2,6 +2,7 @@ package com.ooredoost.app.util
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.provider.Settings
 import android.util.Log
 
@@ -17,11 +18,16 @@ object AirplaneModeHelper {
      * Check if airplane mode is currently enabled.
      */
     fun isAirplaneModeOn(context: Context): Boolean {
-        return Settings.Global.getInt(
-            context.contentResolver,
-            Settings.Global.AIRPLANE_MODE_ON,
-            0
-        ) != 0
+        return try {
+            Settings.Global.getInt(
+                context.contentResolver,
+                Settings.Global.AIRPLANE_MODE_ON,
+                0
+            ) != 0
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to read airplane mode state", e)
+            false
+        }
     }
 
     /**
@@ -29,26 +35,7 @@ object AirplaneModeHelper {
      * @return true if successful, false if permission denied.
      */
     fun enableAirplaneMode(context: Context): Boolean {
-        return try {
-            Settings.Global.putInt(
-                context.contentResolver,
-                Settings.Global.AIRPLANE_MODE_ON,
-                1
-            )
-            // Broadcast the change so the system responds
-            val intent = Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED).apply {
-                putExtra("state", true)
-            }
-            context.sendBroadcast(intent)
-            Log.d(TAG, "Airplane mode ENABLED")
-            true
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Permission denied: WRITE_SECURE_SETTINGS not granted", e)
-            false
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to enable airplane mode", e)
-            false
-        }
+        return setAirplaneMode(context, true)
     }
 
     /**
@@ -56,26 +43,61 @@ object AirplaneModeHelper {
      * @return true if successful, false if permission denied.
      */
     fun disableAirplaneMode(context: Context): Boolean {
-        return try {
-            Settings.Global.putInt(
+        return setAirplaneMode(context, false)
+    }
+
+    /**
+     * Sets the airplane mode state using multiple fallback mechanisms:
+     * 1. Settings.Global.putInt (core method with WRITE_SECURE_SETTINGS)
+     * 2. ConnectivityManager hidden API (if accessible via reflection)
+     * 3. Broadcast notification (safely caught)
+     */
+    private fun setAirplaneMode(context: Context, enabled: Boolean): Boolean {
+        val value = if (enabled) 1 else 0
+        var success = false
+
+        // 1. Primary Method: Settings.Global (requires WRITE_SECURE_SETTINGS)
+        try {
+            success = Settings.Global.putInt(
                 context.contentResolver,
                 Settings.Global.AIRPLANE_MODE_ON,
-                0
+                value
             )
-            // Broadcast the change so the system responds
+            Log.d(TAG, "Settings.Global.putInt AIRPLANE_MODE_ON=$value returned: $success")
+        } catch (e: SecurityException) {
+            Log.e(TAG, "SecurityException on Settings.Global.putInt (WRITE_SECURE_SETTINGS not granted)", e)
+            return false
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception setting AIRPLANE_MODE_ON", e)
+        }
+
+        // 2. Secondary Method: ConnectivityManager via reflection (supported on some ROMs like Transsion/Infinix)
+        try {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            if (cm != null) {
+                val method = cm.javaClass.getMethod("setAirplaneMode", Boolean::class.javaPrimitiveType)
+                method.isAccessible = true
+                method.invoke(cm, enabled)
+                Log.d(TAG, "ConnectivityManager.setAirplaneMode($enabled) invoked successfully")
+            }
+        } catch (e: Throwable) {
+            // Ignore reflection failure, primary method is main
+            Log.d(TAG, "ConnectivityManager reflection skipped: ${e.message}")
+        }
+
+        // 3. Broadcast attempt: Safely catch SecurityException since modern Android protects this broadcast
+        try {
             val intent = Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED).apply {
-                putExtra("state", false)
+                putExtra("state", enabled)
             }
             context.sendBroadcast(intent)
-            Log.d(TAG, "Airplane mode DISABLED")
-            true
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Permission denied: WRITE_SECURE_SETTINGS not granted", e)
-            false
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to disable airplane mode", e)
-            false
+        } catch (e: Throwable) {
+            // ACTION_AIRPLANE_MODE_CHANGED is a protected broadcast on Android 4.4+
+            // System handles the state change automatically via ContentObserver on Settings.Global
+            Log.d(TAG, "Protected broadcast skipped (normal on Android 7+): ${e.message}")
         }
+
+        return success
     }
 
     /**
@@ -95,13 +117,6 @@ object AirplaneModeHelper {
      */
     fun hasPermission(context: Context): Boolean {
         return try {
-            // Try a read operation first
-            Settings.Global.getInt(
-                context.contentResolver,
-                Settings.Global.AIRPLANE_MODE_ON,
-                0
-            )
-            // Try a write test - write the current value back
             val currentValue = Settings.Global.getInt(
                 context.contentResolver,
                 Settings.Global.AIRPLANE_MODE_ON,
@@ -114,6 +129,8 @@ object AirplaneModeHelper {
             )
             true
         } catch (e: SecurityException) {
+            false
+        } catch (e: Exception) {
             false
         }
     }
