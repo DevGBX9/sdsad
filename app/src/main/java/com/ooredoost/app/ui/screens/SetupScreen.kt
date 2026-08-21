@@ -182,14 +182,25 @@ fun SetupScreen(
                     .border(1.dp, CyberGreen.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ) {
-                Text(
-                    text = "adb shell pm grant com.ooredoost.app android.permission.WRITE_SECURE_SETTINGS",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontFamily = FontFamily.Monospace,
-                        textDirection = TextDirection.Ltr
-                    ),
-                    color = CyberGreen
-                )
+                Column {
+                    Text(
+                        text = "adb shell pm grant com.ooredoost.app android.permission.WRITE_SECURE_SETTINGS",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                            textDirection = TextDirection.Ltr
+                        ),
+                        color = CyberGreen
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "adb shell pm grant com.ooredoost.app android.permission.MODIFY_PHONE_STATE",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                            textDirection = TextDirection.Ltr
+                        ),
+                        color = CyberBlue
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
