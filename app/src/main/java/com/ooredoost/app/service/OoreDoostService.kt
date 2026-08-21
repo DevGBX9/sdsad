@@ -434,7 +434,9 @@ class OoreDoostService : Service() {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, MainActivity::class.java),
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -450,9 +452,12 @@ class OoreDoostService : Service() {
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_notification, "إيقاف", stopIntent)
+            .addAction(R.drawable.ic_notification, "Stop", stopIntent)
             .setOngoing(true)
             .setSilent(true)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
     }
 
@@ -474,6 +479,26 @@ class OoreDoostService : Service() {
         _serviceState.value = transform(_serviceState.value)
     }
 
+    /**
+     * Called when the user swipes the app away from recents.
+     * Re-starts the service to ensure it continues running in background.
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        Log.d(TAG, "Task removed (app swiped away) - restarting service")
+        if (_serviceState.value.isRunning) {
+            val restartIntent = Intent(this, OoreDoostService::class.java).apply {
+                action = if (_serviceState.value.mode == CycleMode.SMART) {
+                    ACTION_START_SMART
+                } else {
+                    ACTION_START_MANUAL
+                }
+                putExtra(EXTRA_INTERVAL, _serviceState.value.manualIntervalSeconds)
+            }
+            startService(restartIntent)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cycleJob?.cancel()
@@ -486,3 +511,4 @@ class OoreDoostService : Service() {
         Log.d(TAG, "Service destroyed")
     }
 }
+
